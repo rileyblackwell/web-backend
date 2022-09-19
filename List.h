@@ -113,6 +113,16 @@ public:
       return *this;
     }
 
+    T& operator*();
+
+    Iterator& operator++();
+
+    Iterator();
+
+    bool operator==();
+
+    bool operator!=();
+
   private:
     Node *node_ptr; //current Iterator position is a List node
     // add any additional necessary member variables here

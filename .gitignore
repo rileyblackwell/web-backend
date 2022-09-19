@@ -1,5 +1,6 @@
 *.in
 *.out.correct
 *.out
+*.exe
 .vscode
 Makefile
