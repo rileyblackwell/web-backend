@@ -21,6 +21,8 @@ public:
     // If the queue is empty then an empty string is returned.
     string get_first_queue_position() const;
 
+    // EFFECTS: Returns {count: number of students in the queue, results: students in the queue} 
+    // as a json formatted string. If the queue is empty, count: 0 and results: null is returned.
     string get_all_queue_positions() const;
 
     // MODIFIES: queue
@@ -82,14 +84,9 @@ int main() {
     
     else if (request_method == "GET" && api_request == "/api/queue/") {
       string response_body = ohqueue.get_all_queue_positions();
-      if (!response_body.empty()) { 
-        int body_length = response_body.length();
-        cout << "HTTP/1.1 200 OK\nContent-Type: application/json; charset=utf-8\nContent-Length: "
-             << body_length << "\n\n" << response_body;
-      } else {
-        cout << "HTTP/1.1 200 OK\nContent-Type: application/json; charset=utf-8\nContent-Length: 40"
-             << response_body;
-      }
+      int body_length = response_body.length();
+      cout << "HTTP/1.1 200 OK\nContent-Type: application/json; charset=utf-8\nContent-Length: "
+           << body_length << "\n\n" << response_body; 
     }
     
     else if (request_method == "DELETE" && api_request == "/api/queue/head/") {
@@ -155,7 +152,7 @@ string OHQueue::get_all_queue_positions() const {
 
   json queue_empty_response = {
     {"count", 0},
-    {"results", NULL}
+    {"results", nullptr}
   };
   return queue_empty_response.dump(4) + "\n";
 }
