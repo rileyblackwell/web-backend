@@ -15,52 +15,71 @@ class List {
   //OVERVIEW: a doubly-linked, double-ended list with Iterator interface
 public:
 
+  // EFFECTS: creates an empty list by intializing first and last nodes to nullptr.
+  List() : first(nullptr), last(nullptr), num_elements(0) {}
+  
   //EFFECTS:  returns true if the list is empty
   bool empty() const {
-    assert(false);
+    return !first;
   }
 
   //EFFECTS: returns the number of elements in this List
   //HINT:    Traversing a list is really slow.  Instead, keep track of the size
   //         with a private member variable.  That's how std::list does it.
   int size() const {
-    assert(false);
+    return num_elements;
   }
 
   //REQUIRES: list is not empty
   //EFFECTS: Returns the first element in the list by reference
   T & front() {
-    assert(false);
+    assert(!empty());
+    return first->datum;
   }
 
   //REQUIRES: list is not empty
   //EFFECTS: Returns the last element in the list by reference
   T & back() {
-    assert(false);
+    assert(!empty());
+    return last->datum;
   }
 
   //EFFECTS:  inserts datum into the front of the list
   void push_front(const T &datum) {
-    assert(false);
+    if (empty()) {
+      Node *new_node = new Node{nullptr, nullptr, datum};
+      last = first = new_node;
+    } else {
+      Node *new_node = new Node{first, nullptr, datum};
+      first = first->prev = new_node;    
+    }
   }
 
   //EFFECTS:  inserts datum into the back of the list
   void push_back(const T &datum) {
-    assert(false);
+    if (empty()) {
+      Node *new_node = new Node{nullptr, nullptr, datum};
+      first = last = new_node;
+    } else {
+      Node *new_node = new Node{nullptr, last, datum};
+      last = last->next = new_node;
+    } 
   }
 
   //REQUIRES: list is not empty
   //MODIFIES: may invalidate list iterators
   //EFFECTS:  removes the item at the front of the list
   void pop_front() {
-    assert(false);
+    assert(!empty());
+
   }
 
   //REQUIRES: list is not empty
   //MODIFIES: may invalidate list iterators
   //EFFECTS:  removes the item at the back of the list
   void pop_back() {
-    assert(false);
+    assert(!empty());
+
   }
 
   //MODIFIES: may invalidate list iterators
@@ -90,6 +109,7 @@ private:
 
   Node *first;   // points to first Node in list, or nullptr if list is empty
   Node *last;    // points to last Node in list, or nullptr if list is empty
+  int num_elements;
 
 public:
   ////////////////////////////////////////
@@ -113,24 +133,36 @@ public:
       return *this;
     }
 
-    T& operator*();
+    Iterator() {
+      assert(false);  
+    }
+    
+    T& operator*() const {
+      assert(false);
+    }
 
-    Iterator& operator++();
+    Iterator& operator++() {
+      assert(false);
+    }
 
-    Iterator();
+    // bool operator==(Iterator rhs) const {
+    //   assert(false);
+    // }
 
-    bool operator==();
-
-    bool operator!=();
+    // bool operator!=() const {
+    //   assert(false);
+    // }
 
   private:
     Node *node_ptr; //current Iterator position is a List node
     // add any additional necessary member variables here
-
+    
     // add any friend declarations here
-
+    friend class List;
     // construct an Iterator at a specific position
-    Iterator(Node *p);
+    Iterator(Node *p) {
+      node_ptr = p;
+    }
 
   };//List::Iterator
   ////////////////////////////////////////
@@ -141,16 +173,22 @@ public:
   }
 
   // return an Iterator pointing to "past the end"
-  Iterator end() const;
+  Iterator end() const {
+    return Iterator(last->next);
+  }
 
   //REQUIRES: i is a valid, dereferenceable iterator associated with this list
   //MODIFIES: may invalidate other list iterators
   //EFFECTS: Removes a single element from the list container
-  void erase(Iterator i);
+  void erase(Iterator i) {
+    assert(false);
+  }
 
   //REQUIRES: i is a valid iterator associated with this list
   //EFFECTS: inserts datum before the element at the specified position.
-  void insert(Iterator i, const T &datum);
+  void insert(Iterator i, const T &datum) {
+    assert(false);
+  }
 
 };//List
 
