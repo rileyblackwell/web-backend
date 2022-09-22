@@ -18,9 +18,30 @@ public:
   // EFFECTS: creates an empty list by intializing first and last nodes to nullptr.
   List() : first(nullptr), last(nullptr), num_elements(0) {}
   
+  // EFFECTS: creates a new list from a copy of other.
+  List(const List<T> &other) {
+    copy_all(other);
+  }
+
+  // MODIFIES: *this
+  // EFFECTS: removes all elements from the existing list.  Copies all elements from rhs to the 
+  // existing list.  If the existing list is the same as rhs then nothing is modified.
+  List<T> & operator=(const List<T> &rhs) {
+    if (this != &rhs) {
+      clear();
+      copy_all(rhs);
+    }
+    return *this;
+  }
+
+  // EFFECTS: removes all elements from the list.
+  ~List() {
+    clear();
+  }
+
   //EFFECTS:  returns true if the list is empty
   bool empty() const {
-    return !first;
+    return !first && !last;
   }
 
   //EFFECTS: returns the number of elements in this List
@@ -53,6 +74,7 @@ public:
       Node *new_node = new Node{first, nullptr, datum};
       first = first->prev = new_node;    
     }
+    num_elements += 1;
   }
 
   //EFFECTS:  inserts datum into the back of the list
@@ -64,6 +86,7 @@ public:
       Node *new_node = new Node{nullptr, last, datum};
       last = last->next = new_node;
     } 
+    num_elements += 1;
   }
 
   //REQUIRES: list is not empty
@@ -71,7 +94,13 @@ public:
   //EFFECTS:  removes the item at the front of the list
   void pop_front() {
     assert(!empty());
-
+    Node *new_first = first->next;   
+    delete first;
+    first = new_first;
+    if (!first) {
+      last = nullptr;
+    }
+    num_elements -= 1;
   }
 
   //REQUIRES: list is not empty
@@ -79,13 +108,21 @@ public:
   //EFFECTS:  removes the item at the back of the list
   void pop_back() {
     assert(!empty());
-
+    Node *new_last = last->prev;   
+    delete last;
+    last = new_last;
+    if (!last) {
+      first = nullptr;
+    }
+    num_elements -= 1;
   }
 
   //MODIFIES: may invalidate list iterators
   //EFFECTS:  removes all items from the list
   void clear() {
-    assert(false);
+    while (!empty()) {
+      pop_front();
+    }
   }
 
   // You should add in a default constructor, destructor, copy constructor,
@@ -104,7 +141,10 @@ private:
   //REQUIRES: list is empty
   //EFFECTS:  copies all nodes from other to this
   void copy_all(const List<T> &other) {
-    assert(false);
+    assert(empty());
+    for (Node *node_ptr = other.first; node_ptr; node_ptr = node_ptr->next) {
+      push_back(node_ptr->datum);
+    }
   }
 
   Node *first;   // points to first Node in list, or nullptr if list is empty
