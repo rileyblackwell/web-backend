@@ -19,7 +19,7 @@ public:
   List() : first(nullptr), last(nullptr), num_elements(0) {}
   
   // EFFECTS: creates a new list from a copy of other.
-  List(const List<T> &other) {
+  List(const List<T> &other) : List() {
     copy_all(other);
   }
 
@@ -97,8 +97,11 @@ public:
     Node *new_first = first->next;   
     delete first;
     first = new_first;
+    
     if (!first) {
       last = nullptr;
+    } else {
+      first->prev = nullptr;    
     }
     num_elements -= 1;
   }
@@ -108,11 +111,14 @@ public:
   //EFFECTS:  removes the item at the back of the list
   void pop_back() {
     assert(!empty());
-    Node *new_last = last->prev;   
+    Node *new_last = last->prev; 
     delete last;
     last = new_last;
+    
     if (!last) {
       first = nullptr;
+    } else {
+      last->next = nullptr;
     }
     num_elements -= 1;
   }
@@ -173,25 +179,33 @@ public:
       return *this;
     }
 
-    Iterator() {
-      assert(false);  
-    }
+    Iterator() : node_ptr(nullptr) {}
     
+    // REQUIRES: The current element is dereferenceable.
     T& operator*() const {
-      assert(false);
+      assert(node_ptr);  
+      return node_ptr->datum;
     }
 
+    // REQUIRES: The current element is dereferenceable.
+    // EFFECTS: Moves current iterator position to next element in the list.
     Iterator& operator++() {
-      assert(false);
+      assert(node_ptr);
+      node_ptr = node_ptr->next;
+      return *this;
     }
 
-    // bool operator==(Iterator rhs) const {
-    //   assert(false);
-    // }
+    // EFFECTS: Returns true if rhs Iterator points to the same element as lhs Iterator.  
+    // Otherwise returns false.
+    bool operator==(Iterator rhs) const {
+      return node_ptr == rhs.node_ptr;
+    }
 
-    // bool operator!=() const {
-    //   assert(false);
-    // }
+    // EFFECTS: Returns true if rhs Iterator does not point to the same element as lhs Iterator.  
+    // Otherwise returns false.
+    bool operator!=(Iterator rhs) const {
+      return node_ptr != rhs.node_ptr;
+    }
 
   private:
     Node *node_ptr; //current Iterator position is a List node
@@ -214,20 +228,39 @@ public:
 
   // return an Iterator pointing to "past the end"
   Iterator end() const {
-    return Iterator(last->next);
+    return Iterator();
   }
 
   //REQUIRES: i is a valid, dereferenceable iterator associated with this list
   //MODIFIES: may invalidate other list iterators
   //EFFECTS: Removes a single element from the list container
   void erase(Iterator i) {
-    assert(false);
+    assert(i.node_ptr);
+    if (!i.node_ptr->prev) { // erasing *first
+      pop_front(); 
+    } else if (!i.node_ptr->next) { // erasing *last
+      pop_back();
+    } else {
+      i.node_ptr->next->prev = i.node_ptr->prev;
+      i.node_ptr->prev->next = i.node_ptr->next;
+      delete i.node_ptr;
+      num_elements -= 1;   
+    }     
   }
 
   //REQUIRES: i is a valid iterator associated with this list
   //EFFECTS: inserts datum before the element at the specified position.
   void insert(Iterator i, const T &datum) {
-    assert(false);
+    if (!i.node_ptr) { // inserting *last
+      push_back(datum);
+    } else if (!i.node_ptr->prev) { // inserting *first
+      push_front(datum); 
+    } else {
+      Node *new_node = new Node{i.node_ptr, i.node_ptr->prev, datum};
+      i.node_ptr->prev->next = new_node;
+      i.node_ptr->prev = new_node;
+      num_elements += 1;   
+    }
   }
 
 };//List
