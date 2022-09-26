@@ -178,7 +178,8 @@ public:
       node_ptr = node_ptr->prev;
       return *this;
     }
-
+    
+    // EFFECTS: Constructs an iterator that points to "past the end".
     Iterator() : node_ptr(nullptr) {}
     
     // REQUIRES: The current element is dereferenceable.
@@ -188,6 +189,7 @@ public:
     }
 
     // REQUIRES: The current element is dereferenceable.
+    // MODIFIES: node_ptr
     // EFFECTS: Moves current iterator position to next element in the list.
     Iterator& operator++() {
       assert(node_ptr);

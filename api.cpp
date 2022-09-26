@@ -65,6 +65,7 @@ int main() {
     else if (request_method == "POST" && api_request == "/api/queue/tail/") {
       cin >> request_body;
       request_body["position"] = ohqueue.add_queue_position(request_body["uniqname"], request_body["location"]);
+      
       string response_body = request_body.dump(4) + "\n";
       int body_length = response_body.length();
       cout << "HTTP/1.1 201 Created\nContent-Type: application/json; charset=utf-8\nContent-Length: "
